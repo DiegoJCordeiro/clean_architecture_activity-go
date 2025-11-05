@@ -7,9 +7,9 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o clean_architecture_activit
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=builder --chmod=755 /app/clean_architecture_activity .
+WORKDIR /app
+COPY --from=builder --chmod=755 /app .
 COPY app.env* ./
 ENV MONGODB_URI=mongodb://admin:admin123@mongodb:27017
 EXPOSE 8080
-CMD ["./rater-limiter-activity"]
+CMD ["./clean_architecture_activity"]
