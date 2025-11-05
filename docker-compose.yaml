@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: orders_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./sql/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - orders-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    restart: always
+    ports:
+      - "8080:8080"   # REST API
+      - "50051:50051" # gRPC
+      - "8081:8081"   # GraphQL
+    environment:
+      - MONGODB_URI=mongodb://admin:admin123@mongodb:27017
+      - MONGODB_DATABASE=orders_db
+      - PORT=8080
+      - GRPC_PORT=50051
+      - GRAPHQL_PORT=8081
+    depends_on:
+      - mongodb
+    networks:
+      - orders-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  orders-network:
+    driver: bridge
