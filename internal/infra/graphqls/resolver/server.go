@@ -1,6 +1,7 @@
-package graphqls
+package resolver
 
 import (
+	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/graphqls/models"
 	"net/http"
 
 	"github.com/graphql-go/graphql"
@@ -71,8 +72,8 @@ func CreateGraphQLServer(resolver *Resolver) http.Handler {
 	})
 }
 
-func toCreateOrderInput(input map[string]interface{}) CreateOrderInput {
-	return CreateOrderInput{
+func toCreateOrderInput(input map[string]interface{}) models.CreateOrderInput {
+	return models.CreateOrderInput{
 		CustomerID: input["customer_id"].(string),
 		Price:      input["price"].(float64),
 		Tax:        input["tax"].(float64),

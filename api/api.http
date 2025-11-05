@@ -1,0 +1,60 @@
+### Criar Order via REST
+POST http://localhost:8080/order
+Content-Type: application/json
+
+{
+  "customer_id": "customer-001",
+  "price": 100.50,
+  "tax": 10.05
+}
+
+###
+
+### Listar Orders via REST
+GET http://localhost:8080/order
+
+###
+
+### Criar Order via REST - Exemplo 2
+POST http://localhost:8080/order
+Content-Type: application/json
+
+{
+  "customer_id": "customer-002",
+  "price": 250.00,
+  "tax": 25.00
+}
+
+###
+
+### Criar Order via REST - Exemplo 3
+POST http://localhost:8080/order
+Content-Type: application/json
+
+{
+  "customer_id": "customer-003",
+  "price": 500.75,
+  "tax": 50.08
+}
+
+###
+
+### GraphQL - Criar Order
+POST http://localhost:8081/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { createOrder(input: { customer_id: \"customer-gql-001\", price: 150.00, tax: 15.00 }) { id customer_id price tax final_price created_at } }"
+}
+
+###
+
+### GraphQL - Listar Orders
+POST http://localhost:8081/graphql
+Content-Type: application/json
+
+{
+  "query": "{ listOrders { id customer_id price tax final_price created_at updated_at } }"
+}
+
+###

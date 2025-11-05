@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/application/dtos"
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/domain/adapters/repositories"
-	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/domain/models"
+	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/domain/entities"
 )
 
 type CreateOrderUseCase struct {
@@ -19,7 +19,7 @@ func NewCreateOrderUseCase(repository repositories.OrderRepositoryPort) *CreateO
 
 func (uc *CreateOrderUseCase) Execute(ctx context.Context, input dtos.CreateOrderInputDTO) (*dtos.CreateOrderOutputDTO, error) {
 
-	order, err := models.NewOrder(input.CustomerID, input.Price, input.Tax)
+	order, err := entities.NewOrder(input.CustomerID, input.Price, input.Tax)
 	if err != nil {
 		return nil, err
 	}

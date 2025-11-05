@@ -5,17 +5,15 @@ import (
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/application/dtos"
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/application/usecases"
 	ports "github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/domain/adapters/usecases"
-	pb "github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/grpc/protobuff"
+	protobuff "github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/grpc/protobuff"
 )
 
-// OrderService implementa o serviço gRPC
 type OrderService struct {
-	pb.UnimplementedOrderServiceServer
+	protobuff.UnimplementedOrderServiceServer
 	CreateOrderUseCase ports.CreateOrdersUseCasePort
 	ListOrdersUseCase  ports.ListOrdersUseCasePort
 }
 
-// NewOrderService cria um novo serviço gRPC
 func NewOrderService(
 	createUseCase *usecases.CreateOrderUseCase,
 	listUseCase *usecases.ListOrdersUseCase,
@@ -26,8 +24,7 @@ func NewOrderService(
 	}
 }
 
-// CreateOrder implementa a criação via gRPC
-func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
+func (s *OrderService) CreateOrder(ctx context.Context, req *protobuff.CreateOrderRequest) (*protobuff.CreateOrderResponse, error) {
 	input := dtos.CreateOrderInputDTO{
 		CustomerID: req.CustomerId,
 		Price:      req.Price,
@@ -39,7 +36,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 		return nil, err
 	}
 
-	return &pb.CreateOrderResponse{
+	return &protobuff.CreateOrderResponse{
 		Id:         output.ID,
 		CustomerId: output.CustomerID,
 		Price:      output.Price,
@@ -49,16 +46,15 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 	}, nil
 }
 
-// ListOrders implementa a listagem via gRPC
-func (s *OrderService) ListOrders(ctx context.Context, req *pb.ListOrdersRequest) (*pb.ListOrdersResponse, error) {
+func (s *OrderService) ListOrders(ctx context.Context, req *protobuff.ListOrdersRequest) (*protobuff.ListOrdersResponse, error) {
 	output, err := s.ListOrdersUseCase.Execute(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	var orders []*pb.Order
+	var orders []*protobuff.Order
 	for _, order := range output {
-		orders = append(orders, &pb.Order{
+		orders = append(orders, &protobuff.Order{
 			Id:         order.ID,
 			CustomerId: order.CustomerID,
 			Price:      order.Price,
@@ -69,7 +65,7 @@ func (s *OrderService) ListOrders(ctx context.Context, req *pb.ListOrdersRequest
 		})
 	}
 
-	return &pb.ListOrdersResponse{
+	return &protobuff.ListOrdersResponse{
 		Orders: orders,
 	}, nil
 }

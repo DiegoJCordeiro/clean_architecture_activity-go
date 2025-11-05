@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/application/services"
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/application/usecases"
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/configuration"
-	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/graphqls"
+	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/database"
+	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/graphqls/resolver"
 	pb "github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/grpc/protobuff"
-	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/repositories"
+	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/grpc/services"
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/web/handlers"
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/web/webserver"
 	"log"
@@ -27,13 +27,13 @@ func main() {
 		log.Fatal("Error loading configuration. ", err)
 	}
 
-	db, err := configuration.ConnectMongoDB(config.MongoDBHost, config.MongoDBDatabase)
+	db, err := database.ConnectMongoDB(config.MongoDBHost, config.MongoDBDatabase)
 
 	if err != nil {
 		log.Fatalf("Erro ao conectar ao MongoDB: %v", err)
 	}
 
-	orderRepository := repositories.NewOrderRepository(db)
+	orderRepository := database.NewOrderRepository(db)
 
 	createOrderUseCase := usecases.NewCreateOrderUseCase(orderRepository)
 	listOrdersUseCase := usecases.NewListOrdersUseCase(orderRepository)
@@ -80,8 +80,8 @@ func startGRPCServer(port string, createUC *usecases.CreateOrderUseCase, listUC 
 }
 
 func startGraphQLServer(port string, createUC *usecases.CreateOrderUseCase, listUC *usecases.ListOrdersUseCase) {
-	resolverInstance := graphqls.NewResolver(createUC, listUC)
-	graphqlHandler := graphqls.CreateGraphQLServer(resolverInstance)
+	resolverInstance := resolver.NewResolver(createUC, listUC)
+	graphqlHandler := resolver.CreateGraphQLServer(resolverInstance)
 
 	http.Handle("/graphql", graphqlHandler)
 

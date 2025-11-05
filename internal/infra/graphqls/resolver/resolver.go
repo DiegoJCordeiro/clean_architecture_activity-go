@@ -1,9 +1,10 @@
-package graphqls
+package resolver
 
 import (
 	"context"
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/application/dtos"
 	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/application/usecases"
+	"github.com/DiegoJCordeiro/clean-architecture-activity-go/internal/infra/graphqls/models"
 )
 
 // Resolver é o resolver principal
@@ -38,24 +39,24 @@ type mutationResolver struct{ *Resolver }
 
 // QueryResolver interface
 type QueryResolver interface {
-	ListOrders(ctx context.Context) ([]*Order, error)
+	ListOrders(ctx context.Context) ([]*models.Order, error)
 }
 
 // MutationResolver interface
 type MutationResolver interface {
-	CreateOrder(ctx context.Context, input CreateOrderInput) (*Order, error)
+	CreateOrder(ctx context.Context, input models.CreateOrderInput) (*models.Order, error)
 }
 
 // ListOrders lista todas as ordens
-func (r *queryResolver) ListOrders(ctx context.Context) ([]*Order, error) {
+func (r *queryResolver) ListOrders(ctx context.Context) ([]*models.Order, error) {
 	output, err := r.ListOrdersUseCase.Execute(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	var orders []*Order
+	var orders []*models.Order
 	for _, order := range output {
-		orders = append(orders, &Order{
+		orders = append(orders, &models.Order{
 			ID:         order.ID,
 			CustomerID: order.CustomerID,
 			Price:      order.Price,
@@ -70,7 +71,7 @@ func (r *queryResolver) ListOrders(ctx context.Context) ([]*Order, error) {
 }
 
 // CreateOrder cria uma nova ordem
-func (r *mutationResolver) CreateOrder(ctx context.Context, input CreateOrderInput) (*Order, error) {
+func (r *mutationResolver) CreateOrder(ctx context.Context, input models.CreateOrderInput) (*models.Order, error) {
 	useCaseInput := dtos.CreateOrderInputDTO{
 		CustomerID: input.CustomerID,
 		Price:      input.Price,
@@ -82,7 +83,7 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input CreateOrderInp
 		return nil, err
 	}
 
-	return &Order{
+	return &models.Order{
 		ID:         output.ID,
 		CustomerID: output.CustomerID,
 		Price:      output.Price,
