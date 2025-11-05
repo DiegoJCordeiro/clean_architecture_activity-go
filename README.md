@@ -78,19 +78,19 @@ orders-system/
 │   │   │   └── service/
 │   │   │       └── order_service.go
 │   │   │   
-│   │   ├── graph/                   # GraphQL
+│   │   ├── graphqls/                   # GraphQL
 │   │   │   └──  models/
-│   │   │           └── models.go
-│   │   ├── resolver/
-│   │   │   ├── resolver.go
-│   │   │   └── server.go
+│   │   │   │       └── models.go
+│   │   │   └──  resolver/
+│   │   │       ├── resolver.go
+│   │   │       └── server.go
 │   │   └── schema.graphql       # Schema GraphQL
 │   
 ├── api/
 │   └── api.http                 # Requisições HTTP para teste
 │
 ├── scripts/
-│   ├── test.sh                  # Script de testes
+│   └── test.sh                  # Script de testes
 │
 ├── sql/
 │   └── migrations/
@@ -117,7 +117,7 @@ orders-system/
 
 ```bash
 # 1. Instalar dependências
-./scripts/install.sh
+./install.sh
 
 # 2. Subir com Docker
 docker-compose up -d
@@ -134,18 +134,6 @@ go run cmd/clean_architecture_activity/main.go
 ```bash
 # Subir tudo com Docker
 docker-compose up --build -d
-```
-
-### Opção 3: Usando Makefile
-
-```bash
-# Ver comandos disponíveis
-make help
-
-# Setup e executar
-make install
-make docker-up
-make run
 ```
 
 ---
@@ -169,11 +157,11 @@ make run
 
 ### Arquivo test.sh
 
-Use o arquivo `tests/test.sh` para testar algumas reqs graphql, grpc e rest.
+Use o arquivo `scripts/test.sh` para testar algumas reqs graphql, grpc e rest.
 
-### Arquivo api_test.http
+### Arquivo api.http
 
-Use o arquivo `tests/api_test.http` para testar algumas reqs.
+Use o arquivo `api/api.http` para testar algumas reqs.
 
 ---
 
@@ -247,31 +235,6 @@ cp app.env app.env
 docker-compose up -d
 ```
 
----
-## 🎓 Conceitos Aplicados
-
-### SOLID Principles
-- Single Responsibility
-- Open/Closed
-- Liskov Substitution
-- Interface Segregation
-- Dependency Inversion
-
-### Design Patterns
-- Repository Pattern
-- Dependency Injection
-- DTO Pattern
-- Factory Pattern
-
-### Clean Architecture
-- Independência de Frameworks
-- Testabilidade
-- Independência de UI
-- Independência de DB
-- Dependency Rule
-
----
-
 ## 📚 Comandos Úteis
 
 ```bash
@@ -283,53 +246,17 @@ docker-compose logs -f            # Ver logs
 # Go
 go mod tidy                       # Organizar dependências
 go run cmd/clean_architecture_activity/main.go         # Executar
-go build -o bin/server cmd/clean_architecture_activity/main.go  # Compilar
-
-# Makefile
-make help                         # Ver comandos
-make install                      # Instalar
-make run                          # Executar
-make test                         # Testar
+go build -o bin/clean_architecture_activity cmd/clean_architecture_activity/main.go  # Compilar
 ```
 
 ---
 
-## 🎯 Checklist de Requisitos
-
-### Funcionalidades
-- [x] REST API - POST /order
-- [x] REST API - GET /order
-- [x] gRPC - CreateOrder
-- [x] gRPC - ListOrders
-- [x] GraphQL - createOrder
-- [x] GraphQL - listOrders
-
-### Infraestrutura
-- [x] MongoDB com Docker
-- [x] Dockerfile
-- [x] docker-compose.yaml
-- [x] Migrações (001_init.js)
-
-### Arquitetura
-- [x] Clean Architecture
-- [x] Entities com validação
-- [x] Use Cases com DTOs
-- [x] Repository Pattern
-- [x] Dependency Injection
-
-### Documentação
-- [x] README.md
-- [x] api.http
-- [x] Explicação das portas
-- [x] Passos de execução
-
----
 
 ## 🚀 Início Rápido
 
 ```bash
 # 1. Instalar
-./scripts/install.sh
+./install.sh
 
 # 2. MongoDB e App
 docker-compose up -d
